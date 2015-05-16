@@ -1,0 +1,208 @@
+\documentclass{article}
+\usepackage{times}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{algpseudocode}
+\usepackage{pdfpages} %insert pdf pages
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage[]{algpseudocode}
+
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\  }
+\rhead{\hmwkTitle}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Project Report \#2}
+\newcommand{\hmwkDueDate}{Mar 8, 2015}
+\newcommand{\hmwkClass}{ComS 535x}
+\newcommand{\hmwkClassInstructor}{Instructor: Professor Aduri, Pavankumar}
+\newcommand{\hmwkAuthorName}{Yuanyuan Tang, Chenguang He}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\\\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+\renewcommand{\thesection}{\arabic{section}}% Remove section references...
+\renewcommand{\thesubsection}{\arabic{subsection}}%... from subsections
+
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%       default
+   {\csname #1@cntformat\endcsname}}%    enable individual control
+\newcommand\section@cntformat{}
+\makeatother
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{MinHash}
+\subsection{Your procedure to collect all terms of the documents and the data structure used for this.}
+I use Scanner to scan each file in the given folder, and save all modified terms in $HashSet<String> terms$. Also, i use $HashMap<String, HashSet<String>> allStringsPerFile$ to store the file name and its terms. The reason i pick HashSet to store the term is that, when we construct the binary representation of terms, we can have O(1) access to the terms.
+\subsection{Your procedure to assign an integer to each term}
+I make a iterator, iterate all the terms one by one. I start a counter j at the beginning in iteration. For each term, if it is belong to the file, i put the counter in output array. Therefore, we get a array of a sequence with all terms appeared in increasing order. In here, we use Hashset instead of Treeset is kind of tricky. Since the iterator of Hashset is not in order, it could result in the different iterator returns after we add new element in Hashset. However, after we read files, the Hashset is final. It will not change, that is why i pick up Hashset insteadof Treeset.(Notice that, Treeset's iterator is in order and stable).
+\subsection{The permutations used, and the process used to generate random permutations}
+I pick a very large prime p at the beginning, p $\in$[N, 2N], where N is the number of terms. Then i use (a+bx)%p to get the permutations, a and b are random numbers in [1,p]. Different permutations have different a and b and p.\\
+
+To generate p, i use prime test from N. and it randomly comes a number in [N, 2N]. By the prime number theorem, the average number of prime in [N,2N] are $\dfrac{N}{ln(N)}$, therefore there must exist enough prime numbers in the range.
+\subsection{Brief pseudo code for methods: exactJaccard, minHashSig, approximateJaccard, minHashMatrix}
+
+\begin{algorithm}
+\caption{Exact Jaccard Calculation}
+\begin{algorithmic}[1]
+\Procedure{exactJaccard}{$file1, file2$}
+\State b1 $\gets$ $termsBinaryRepresenatation$ of file1
+\State b2 $\gets$ $termsBinaryRepresenatation$ of file2
+\State intersection $\gets$ 0
+\State union $\gets$ 0
+\State i $\gets$ 0
+\State j $\gets$ 0
+\While{$b1[i] \neq $ -1 and $b2[j] \neq $ -1 }
+\If{$b1[i] = b2[j]$}
+\State intersection $\gets$ intersection + 1
+\State i $\gets$ i + 1
+\State j $\gets$ j + 1
+\EndIf
+\If{$b1[i] < b2[j]$}
+\State i $\gets$ i + 1
+\EndIf
+\If{$b1[i] > b2[j]$}
+\State j $\gets$ j + 1
+\EndIf
+\State union $\gets$ union + 1
+\EndWhile
+\State union $\gets$ union + 1
+\State return $\dfrac{intersection}{union}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{minHashSig Calculation}
+\begin{algorithmic}[1]
+\Procedure{minHashSig}{$termsBinaryRepresenatation$}
+\State Create minHash array in size of numPermutations
+\For{File f $\gets$ termsBinaryRepresenatation.KeySet()}
+\State bins $\gets$ termsBinaryRepresenatation.get(f)
+\For{Permutation p $\gets$ permutationses}
+\State min $\gets$ Integer.MaxValue
+\For{Boolean b $\gets$ bins} 
+\If{b is $true$}
+\If{p.(b) $<$ min}
+\State min $\gets$ p.(b)
+\EndIf
+\EndIf
+\EndFor
+\EndFor
+\State Store min in minHash
+\EndFor
+\State return minHash
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Approximate Jaccard Calculation}
+\begin{algorithmic}[1]
+\Procedure{Approximat Jaccard}{$file1, file2$}
+\State b1 $\gets$ $minHash$ of file1
+\State b2 $\gets$ $minHash$ of file2
+\State intersection $\gets$ 0
+\For{each pair $<d1,d2>$ in b1 b2}
+\If{d1 is $true$ and d2 is $true$}
+\State intersection $\gets$ intersection + 1
+\EndIf
+\EndFor
+\State return $\dfrac{intersection}{numPermutations}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{MinHash Matrix Calculation}
+\begin{algorithmic}[1]
+\Procedure{MinHash Matrix}{$minHash$}
+\State matrix $\gets$ [numPermutations][min.Hash.Keyset.size]
+\State Iterator $\gets$ $minHash$'s iterator
+\For{each string in Iterator}
+\State hashs $\gets$ iterator.next
+\\For{each permutationse in permutationses}
+\State matrix $\gets$ hashs[numPermutation]
+\EndFor
+\State return matrix
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\clearpage
+
+\section{MinHashAccuracy}
+\begin{table}[h]
+\caption{Error is row, Number of Permutation is column. Data is (Large Error Pairs, Exact Jac in Sec, Appro Jac in Sec)}
+\label{my-label}
+\begin{tabular}{lllll}
+\textbf{\begin{tabular}[c]{@{}l@{}}\end{tabular}} & \textbf{0.04}       & \textbf{0.07}     & \textbf{0.09}     & \textbf{} \\
+\textbf{400}                                                                                                                                                  & (3131,0.527, 0.199) & (8, 0.535, 0.184) & (1, 0.565, 0.189) &           \\
+\textbf{600}                                                                                                                                                  & (658, 0.52, 0.268)  & (2, 0.535, 0.268) & (1, 0.563, 0.279) &           \\
+\textbf{800}                                                                                                                                                  & (267, 0.532, 0.361) & (4, 0.542, 0.358) &(1, 0.573, 0.368)                  &          
+\end{tabular}
+\end{table}
+
+In conclusion,Increasing number of permutation result in less error, however, it does not bring a large increasing of time complexity. It is because the increasing number is small to the number of terms. For example, It is no large time complexity different between calculation on 400 rows and 600 rows by computer.\\
+
+Another point is that, the large error pairs are in the range of [0.04, 0.07], since when we adjust the allowed error to 0.09, there is only 1 pair in that range. The error happens because of the permutation we picked may not be able to totally permute the binary representation. \\
+
+\end{document}

@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage{times}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{algpseudocode}
+\usepackage{pdfpages} %insert pdf pages
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage[]{algpseudocode}
+
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\  }
+\rhead{\hmwkTitle}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Research Report}
+\newcommand{\hmwkDueDate}{May 8, 2015}
+\newcommand{\hmwkClass}{ComS 535x}
+\newcommand{\hmwkClassInstructor}{Instructor: Professor Aduri, Pavankumar}
+\newcommand{\hmwkAuthorName}{Yuanyuan Tang, Chenguang He}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\\\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+\renewcommand{\thesection}{\arabic{section}}% Remove section references...
+\renewcommand{\thesubsection}{\arabic{subsection}}%... from subsections
+
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%       default
+   {\csname #1@cntformat\endcsname}}%    enable individual control
+\newcommand\section@cntformat{}
+\makeatother
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Hashing and Bloom Filters}
+Bloom Filters is the one of most advanced data structure invent in recent years. It use the hash functions to reduce the space complexity. It is a probabilistic data structure, so the false positive exists. However it is relatively small, and there is no false negatives.Although Bloom filters allow false positive, for many applications the space efficiency take over this drawback, when the probability of an error is sufficiently low. In the following section, we discuses the hash function, structure of bloom filter and the usage of bloom filter.\\
+
+A hash function is a function that take an item of data and process it to produce a value or key. It is a mapping that map two objects in a relation. For example, we can easily define the hash function of a string with the sum of all character and mod a large prime. When we want to check the whether two string are same, we only need to compute the hash function and check the result whether is same. This approach can save a lot of memory to store strings. However, a hash function is hard to be a one to one mapping function, since when two different data values to produce a same hash value, we call it hashing collision. A good hash function can reduce the hashing collision by spreading the data into the array. In the class, we discuss two normal hash functions: Random Hash Function and Deterministic Hash Functions.\\
+
+Random hash function is defined by choosing the large prime p and define a and b from the range of [1,p-1], the function is $h(x) = (ax+b) \%p$. The advantage of using the random function is that, the function is defined by random large prime p which the selection of p can be variant, in other word, if we want two different random hash function, we just select different large prime p, it is very efficiency to build the function.  Also, when we use the random hash function, we only need to store the [a,b,p] in a 3-tuple. It save a lot of space to store the functions themselves.\\
+
+Deterministic hash function is defined by a constant large prime p, we try to build a formalized hash function h, such that, h is defined by take a large prime 109951168211, we call it FNV64PRIME and a offset of 14695981039346656037, we call it FNV-64INIT, the hash function is that: h = h xor s[i] and h = (h*FNV64PRIME)$\%2^{64}$. We call it deterministic hash function, because the parameters of hash function are constant, therefore, if we want to use different hash function, we need to have a algorithm to compute the offset, it is given in http://www.isthe.com/chongo/tech/comp/fnv/. The advantage of deterministic hash function is that, when we want to use a different hash function, we only need to change the offset of hash function to get the new function, it save the time to find the prime.\\
+
+The Bloom Filter is build by constructing k hash function, and it has the interface of add(), contains(). However, the original approach of Bloom Filter can not move the element, the reason is that you can not unset a bit that appears to belong to a data item because it might also be set by another data item. When we add an item into Bloom Filter, it compute k hash function of the item and set the bitset of k values to true. When we search an item in Bloom Filter, we compute the k hash functions and check whether one of them is true in bitset. The Bloom Filter trade the accuracy for space, we can calculate the false positive rate: $(1 - e^{\dfrac{-kN}{M}})^{k}$, where k is the number of hash function, N is the size of item size S, M is the size of bit table.
+
+\clearpage
+\section{Document Similarity}
+\clearpage
+\section{Crawling and Page Rank}
+\subsection{Crawling the web}
+Basically, the word wide web could be considered as a directed graph. Each web page is a vertex in the graph. If 
+We could use BFS to traverse this directed graph. A web crawler usually start with a URL, called the seed.
+\subsection{Page Rank}
+Intuitively, web search engines use web crawlers to to catch the content of each web page and listing the terms found in each page. With these information, an inverted index could be build upon all the web pages. With this index, we could perform a query and rank each web by the similarity between the page and the query. The one with the highest similarity of the query is the highest ranked page. However, this method bears a major drawback: it cannot identify  
+\clearpage
+\section{Information Retrieval}
+\clearpage
+\end{document} 

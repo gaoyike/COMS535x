@@ -1,0 +1,230 @@
+\documentclass[a4paper,14pt]{article}
+\usepackage{times}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+\begin{document}
+\vspace*{\fill}
+\begingroup
+\centering
+\textbf{{\Large ComS 535x Project 1 Report }}
+
+\vspace{1cm}
+
+Name: Chenguang He
+
+\endgroup
+\vspace*{\fill}
+
+\clearpage
+
+\begin{center}
+\textbf{{\large BloomFilterDie.java}}
+\end{center}
+\textbf{public BloomFilterDet(int setSize)} is the constructor of BloomFilterDet, which inside, it create the number of hash functions by lg2 * bit per element. It create the Bitset by setSize * bit per element. In Java, we use 8 for bit per element. However, it can be changed in Configuration Interface. We initial every hash function by using the constructor of inner class FNVHashFunction.
+\\[6pt]
+\textbf{public void add(String s)} is used to add string into BloomFilter, for each time, it add a string, it will increase the dataSize by 1. and it will call k times hash function to map k different hash into bitset.
+\\[6pt]
+\textbf{public boolean appears(String s)} is used to check whether a string is in the BloomFilter. It takes k times hash of string, and check for each of hash whether it appears in BloomFilter,  if all of them appears, then return true, otherwise return false.
+\\[6pt]
+\textbf{public int filterSize()} returns the size of filter.
+\\[6pt]
+\textbf{public int dataSize()} returns the number of string added into filter.
+\\[6pt]
+\textbf{public int numHashes()} returns the number of hash function.
+\\[6pt]
+\textbf{class FNVHashFunction} is the inner class. it constructs a fnv hash function by a constant prime 16777619. And, in order to generate k hash function. it changes the offset of hash (the initial value of hash) by the algorithm from http://www.isthe.com/chongo/tech/comp/fnv/.
+\\[6pt]
+\textbf{public FNVHashFunction(int hashbits)} is the constructor of FNVHashFunction class, Every time, it called, it is used to generate the offset.
+\\[6pt]
+\textbf{public int hash(byte[] bytes)} is used to generate the hash for byte array. the byte array is getting from the string. the function will hash the string and return a 32 bits hash. it starts from the offset which generate randomly by generateOffset(String s) method, then it implements the FNV 1-a hash function. Firstly, it takes the xor with each byte, then it multiply the prime 16777619. At the result, it should be a long and we need to cast it into 32 bit int, therefore, we do "and" operation to cut the long into int by "and" with Integer.MAXVALUE, then we need to map the hash into our table, it will module the set of filter and return the final value, which is a 32 bits.
+\\[6pt]
+\textbf{private long generateOffset(String s)} is used to generate the value offset for hash function. the offset of hash function is the initial value of hash. it should be a 64 bits long instead of 32 int, because the hash could be calculate into a very large number. the algorithm in here is from http://www.isthe.com/chongo/tech/comp/fnv/. Basically, the offset is from a random string and it make sure the value is distributed into entire bitset.
+\\[6pt]
+\textbf{For the class BloomFilterDet, specify whether you used 32-bit hash or 64-bit hash. You should explain the process via which you are is generating k-hash values, and the rationale behind your process}
+\\[6pt]
+I used 32 bits instead of 64 bits. Firstly, because the default size of integer class in Java set to 32 bits (signed, half negative and half positive) and the document is in UTF-16, the encoding of words in document is easy to map into a 32 bits hash system with out loss generality. Secondly, if i use 64 bits hash, i have to use BigInteger to hold the "long long" value, since we need to have as much as $ 2^{64} $ \textbf{positive} integer value to get the hash of document and it is too big for our propose. 
+\\[6pt]
+The way of generating k hash function is that, i use a offset, which is the initial value of hash function and i keep the prime as same for each hash function. The offset only generates the first time call the constructor, after it generated, the offset will never change. The algorithm of generating the function is from http://www.isthe.com/chongo/tech/comp/fnv/. The retionale behind my process is that, having a random string and get the offset from the string. By the given algorithm, the offset can distributes into our filter perfectly. The algorithm is as following:
+\begin{algorithm}
+\caption{Calculate Die Hash}
+\begin{algorithmic}
+\STATE $prime /gets16777619$
+\STATE $offset /gets Random()$
+\STATE $hash /gets offset$
+\FORALL {Bytes}
+\STATE $hash = hash \oplus b$
+\STATE $hash = hash* prime$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm} 
+
+
+
+
+
+
+
+
+
+
+
+\clearpage
+
+\begin{center}
+\textbf{{\large BloomFilterRan.java}}
+\end{center}
+\textbf{public BloomFilterRan(int setSize)} is the constructor of BloomFilterRan, which inside, it create the number of hash functions by lg2 * bit per element. It create the Bitset by setSize * bit per element. In Java, we use 8 for bit per element. However, it can be changed in Configuration Interface. We initial every hash function by using the constructor of inner class RanHashFunction.
+\\[6pt]
+\textbf{public void add(String s)} is used to add string into BloomFilter, for each time, it add a string, it will increase the dataSize by 1. and it will call k times hash function to map k different hash into bitset.
+\\[6pt]
+\textbf{public boolean appears(String s)} is used to check whether a string is in the BloomFilter. It takes k times hash of string, and check for each of hash whether it appears in BloomFilter,  if all of them appears, then return true, otherwise return false.
+\\[6pt]
+\textbf{public int filterSize()} returns the size of filter.
+\\[6pt]
+\textbf{public int dataSize()} returns the number of string added into filter.
+\\[6pt]
+\textbf{public int numHashes()} returns the number of hash function.
+\\[6pt]
+\textbf{class RanHashFunction} is the constructor for inner class RanHashFunction. The constructor finds the prime between N and 2N, randomly returns one of the prime. then it set a and b to two random number from 1 to prime. The prime is generated by method generateRandomPrime.
+\textbf{private int generateRandomPrime(int from, int to)} is used to generate a random prime between from and to. it randomly generate some integer between from and to, then test if it is a prime by isPrime method.
+\\[6pt]
+\textbf{private boolean isPrime(int num)} is used to test whether num is a prime by cancel all multiplier from 2 to N. 
+\\[6pt]
+\textbf{public int hash(byte[] bytes)}The random hash function firstly generate two prime a and b, then using the formula from lectures notes: ax+b to generate the hash for each byte in byte array, After that, it trims from long to int and module the set of BloomFilter.
+\\[6pt]
+\textbf{The random hash function that you used for the class BloomFilterRan, again explain how you generated k hash values.}
+\\[6pt]
+Basically, the hash function starts from generating two prime number a and b, where a and b is in the range of N to 2N, where N is the biggest number in the size, and the hash add ax+b, which for each time it go through the byte array. Finally, it trims from long to int and module the set of BloomFilter. The k function generate by different prime number, a and b. The algorithm is as following:
+\begin{algorithm}
+\caption{Calculate Ran Hash}
+\begin{algorithmic}
+\STATE $p /gets RandomPrime(N,2N)$
+\STATE $a /gets RandomPrime(1,P)$
+\STATE $b /gets RandomPrime(1,P)$
+\FORALL {Bytes}
+\STATE $hash = a* hash + b$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm} 
+
+
+\clearpage
+
+\begin{center}
+\textbf{{\large FalsePositives.java}}
+\end{center}
+\textbf{public FalsePositives(int setSize)} is the constructor of FalsePositives class. it initializes a hashset strings, which use to store the samples and two bloomfilters, BloomFilterDet and BloomFilterRan. setSize is the size of bloomfilter size.
+\\[6pt]
+\textbf{public double[] falsePositive(int sampleNum, int LengthofString)} is the method used to return the experiment result. The first parameter is the sample number, which is that how many number of element pre-store in bloomfilter, the second parameter is the length of random string. it will returns the value in form of double array, which double[0] is the fraction of false-positive rate of BloomFilterDet and second is for BloomFilterRan.
+\\[6pt]
+\textbf{public int getTotalNum()} returns the total sample number that it tested.
+\\[6pt]
+\textbf{private String generateRandomString(int length)} return a random string from a collection of alphabets, which in this case is     
+\emph{private final String alphas = "abcdefghijklmnopqrstuvwxyz0123456789"}. it takes the input as the length of random string and return a random string.
+\\[6pt]
+\textbf{The experiment designed to compute false positives}
+\\[6pt]
+The experiment of false positive has three parts: firstly, it pre-store a batch random generated strings into three places: hashset, BloomFilterDet and BloomFilterRan. Secondly it randomly generate strings and test, if it is NOT in the hashset, which means that, the string is NOT pre-store in bloomfilters, if the bloomfilter shows that it appears the string, then it count as one false-positive. The reason of design experiments like this, is because that we want to test the false positive, but the false positive do not have any relationship with the pre-store data, so we need to isolate those two parts of data, that is why i generate the random string in the second parts. Finally, the program will run until it find the 100 false-positive and return the result. The entire experiment is like following:
+\begin{algorithm}
+\caption{Calculate False Positive}
+\begin{algorithmic}
+\STATE $countOfDie \gets 0$
+\STATE$countOfRan \gets 0$
+\STATE$countOfTests \gets 0$
+\STATE$strings \gets HASHSET(0)$
+\STATE$bloomfilterDie \gets bloomfilterDie(0)$
+\STATE$bloomfilterRan \gets bloomfilterRan(0)$
+\WHILE{$SampleNumber \neq 0$}
+\STATE $rs \gets RandomString()$
+\STATE$strings \gets rs$
+\STATE$bloomfilterDie \gets rs$
+\STATE$bloomfilterRan \gets rs$
+\STATE$SampleNumber = SampleNumber - 1$
+\ENDWHILE
+\WHILE{$countOfDie \neq 100$}
+\STATE $rs \gets RandomString()$
+\IF{$!strings.contains(rs) \delta\delta bloomfilterDie.appears(rs) $}
+\STATE$countOfDie = countOfDie + 1 $
+\ENDIF
+\STATE$countOfTests = countOfTests + 1 $
+\ENDWHILE
+\STATE$Die = countOfDie / countOfTests$
+\STATE $countOfTests \gets 0$
+\WHILE{$countOfRan \neq 100$}
+\STATE $rs \gets RandomString()$
+\IF{$!strings.contains(rs) \delta\delta bloomfilterRan.appears(rs) $}
+\STATE$countOfRan = countOfRan + 1 $
+\ENDIF
+\STATE$countOfTests = countOfTests + 1 $
+\ENDWHILE
+\STATE$Ran = countOfRan / countOfTests$
+\RETURN $<Die,Ran>$
+\end{algorithmic}
+\end{algorithm} 
+
+\clearpage
+
+\begin{center}
+\textbf{{\large DocumentFilter.java}}
+\end{center}
+\textbf{public DocumentFilter(String fileName, String pathName) } is the constructor of DocumentFilter class. the first parameter is the file name and the second parameter is the path name of the file.
+\\[6pt]
+\textbf{public void addDocument()}, firstly, it will count the words in the file and filter all words with length less than 3 or the word is "the" or "The". then it will add the word into the bloomfilter. Notice that, it will create the bloomfilter before adding the element. the size of bloomfilter is the counted number of words in the file.
+\\[6pt]
+\textbf{private void countWords()} this method will count the number of words in the file.
+\\[6pt]
+\textbf{private String[] modifyString(String s)} this method will modify the string, trim all symbol and return the array of words in a string.
+\\[6pt]
+\textbf{public boolean appears(String s)} returns true, if s is in the bloomfilter. otherwise false.
+\\[6pt]
+\textbf{public String getDocument()} returns current document name
+\\[6pt]
+\textbf{public int filterSize()} returns the bloomfilter's size
+\\[6pt]
+\textbf{public int dataSize()} returns the number of data in the bloomfilter.
+\\[6pt]
+\textbf{public int numHashes()} returns the number of hash function in the bloomfilter.
+
+\clearpage
+
+\begin{center}
+\textbf{{\large BloomSearch.java}}
+\end{center}
+\textbf{public BloomSearch(String foldername)}, it creates a DocumentFilter for each file in the folder directory.
+\\[6pt]
+\textbf{public ArrayList<String> query(String s)} it takes a query as input, and output all files that contains the word in the query. Notice that, if the query is "black hole", then the output should contains "black" OR "hole".
+\\[6pt]
+\textbf{private String[] modifyString(String s)} it takes a input string, and trims all comma and period.
+
+\clearpage
+
+\begin{center}
+\textbf{{\large Experiments.java}}
+\end{center}
+The experiment use the formula:
+\begin{itemize}
+  \item n is Number of items in the filter
+  \item p is Probability of false positives, float between 0 and 1 or a number indicating 1-in-p
+  \item m Number of bits in the filter
+  \item  k Number of hash function
+  \item m = ceil((n * log(p)) / log(1.0 / (pow(2.0, log(2.0)))))
+  \item k = round(log(2.0) * m / n)
+\end{itemize}
+There are three experiment with different configurations, all of them takes the average of \textit{ExperimentTimes}:
+\begin{itemize}
+  \item FalsePositive1. Theoretically, p = 0.02, n = 1000000, m = 1017795 * 8(bit per element), k = 6
+  \item FalsePositive2. Theoretically, p = 0.2, n = 2000000, m = 1017795 * 8(bit per element), k = 6
+  \item FalsePositive3. Theoretically, p = 0.5, n = 1000000, m = 779403 * 8(bit per element), k = 4
+\end{itemize} 
+
+\clearpage
+
+\begin{center}
+\textbf{{\large Question and Answer}}
+\end{center}
+\textbf{For both the filietrs BloomFilterDet and BloomFilterRan report the false probabilities when sbitsPerElement are 8 and 16. How do false positives for both classes compare? Which filter has smaller false positives? If there is a considerable difference between the false positives, can you explain the difference?}
+\\[6pt]
+The false positive for 8 bits Det and Ran are 2~2.5\% and for 16 bits are 2.5~2.7\%. The Die
+\end{document}

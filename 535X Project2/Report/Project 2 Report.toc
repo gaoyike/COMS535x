@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {1}MinHash}{3}
+\contentsline {subsection}{\numberline {1}Your procedure to collect all terms of the documents and the data structure used for this.}{3}
+\contentsline {subsection}{\numberline {2}Your procedure to assign an integer to each term}{3}
+\contentsline {subsection}{\numberline {3}The permutations used, and the process used to generate random permutations}{3}
+\contentsline {subsection}{\numberline {4}Brief pseudo code for methods: exactJaccard, minHashSig, approximateJaccard, minHashMatrix}{3}
+\contentsline {section}{\numberline {2}MinHashAccuracy}{6}

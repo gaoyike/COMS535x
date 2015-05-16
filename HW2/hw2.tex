@@ -1,0 +1,231 @@
+\documentclass{article}
+\usepackage{times}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{algpseudocode}
+\usepackage{pdfpages} %insert pdf pages
+\usepackage{enumerate}
+\usepackage{listings}
+
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\  }
+\rhead{\hmwkTitle}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#2}
+\newcommand{\hmwkDueDate}{Mar 3, 2015}
+\newcommand{\hmwkClass}{ComS 535x}
+\newcommand{\hmwkClassInstructor}{Instructor: Professor Pavankumar Aduri}
+\newcommand{\hmwkAuthorName}{Chenguang He}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\\\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+\renewcommand{\thesection}{\arabic{section}}% Remove section references...
+\renewcommand{\thesubsection}{\arabic{subsection}}%... from subsections
+
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%       default
+   {\csname #1@cntformat\endcsname}}%    enable individual control
+\newcommand\section@cntformat{}
+\makeatother
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Question 1}
+\textbf{Consider the following documents D1 = {1, 4, 6, 7, 8} and D2 = {2, 3, 9, 4, 7}}\\
+
+(a) What are the binary term-frequency vectors of D1 and D2? \\
+
+Answer:\\
+
+$T = (1,4,6,7,8,2,3,9)$\\
+
+$Tf_{11} = <1,1,1,1,1,0,0,0>, Tf_{12} = <0,1,0,1,0,1,1,1>$ \\
+
+(b) What is the Jaccard Similary of D1 and D2 (with respect to binary term-frequency
+vectors)\\
+
+Answer:\\
+
+$Jac(Tf_{11}, Tf_{12}) = \dfrac{|Tf_{11} \cap Tf_{12} |}{|Tf_{11} \cup Tf_{12}|} = \dfrac{Tf_{11} \cdot Tf_{12}}{Tf_{11}^{2}+Tf_{12}^{2}-Tf_{11} \cdot Tf_{12}} = 0.25$\\
+
+(c) What is the cosine similarity of D1 and D2 (with respect to binary term-frequency
+vectors)\\
+
+Answer:\\
+
+$Cos(Tf_{11}, Tf_{12})  = \dfrac{Tf_{11} \cdot Tf_{12}}{||Tf_{11}|| ||Tf_{12}||} = 0.4$
+
+
+\clearpage 
+
+
+\section{Question 2}
+\textbf{Let D1 and D2 be two documents. Let C be the cosine similarity of the documents with
+respect to binary term-frequency vectors and J be the jacquard similarity with respect to
+binary term-frequency vectors. Show that}\\
+
+(a) $C^{2} \leq J$
+
+Answer:\\
+
+Let $\dfrac{C^{2}}{J} = \dfrac{|D_{1} \cap D_{2}|^{2}}{|D_{1}||D_{2}|} \times \dfrac{|D_{1} \cup D_{2}|}{|D_{1} \cap D_{2}|} = \dfrac{|D_{1} \cap D_{2}| \cdot |D_{1} \cup D_{2}|}{|D_{1}||D_{2}|}$, when D1 = D2,  $C^{2} = J$, otherwise, $|D_{1} \cap D_{2}|$ will go smaller and the inequality will less than 1.\\
+
+(b) $J \leq \dfrac{C}{2-C}$\\
+
+Answer:\\
+
+Let D1 = X and D2 = Y, and i from 1 to n.\\
+
+Since, J = $\dfrac{\sum{X_{i}Y_{i}}} {\sum{X_{i}^{2}} + \sum{Y_{i}^{2}} - \sum{X_{i}Y_{i}}} $ and C =  $\dfrac{\sum{X_{i}Y_{i}}} { \sqrt{\sum{X_{i}^{2}}} + \sqrt{\sum{Y_{i}^{2}}}} $\\
+
+We have $\dfrac{C}{J} = \dfrac{\sum{X_{i}^{2}} + \sum{Y_{i}^{2}} - \sum{X_{i}Y_{i}}}{ \sqrt{\sum{X_{i}^{2}}} + \sqrt{\sum{Y_{i}^{2}}}} = \sqrt{\dfrac{\sum{X_{i}^{2}}}{\sum{Y_{i}^{2}}}} + \sqrt{\dfrac{\sum{Y_{i}^{2}}}{\sum{X_{i}^{2}}}} - C$\\
+
+Thus, $J = \dfrac{C}{\sqrt{\dfrac{\sum{X_{i}^{2}}}{\sum{Y_{i}^{2}}}} + \sqrt{\dfrac{\sum{Y_{i}^{2}}}{\sum{X_{i}^{2}}}} - C}$\\
+
+Because of X and Y are two vectors, we can write the relationship between X and Y as: $|X| = c |Y|$ where $c > 0$.
+then when $c = 1$, $|X| = |Y|$, we have $J = \dfrac{C}{2-C}$, we have $J \leq \dfrac{C}{2-C}$, since $\sqrt{\dfrac{\sum{X_{i}^{2}}}{\sum{Y_{i}^{2}}}} + \sqrt{\dfrac{\sum{Y_{i}^{2}}}{\sum{X_{i}^{2}}}}$ has minimum value, when X = Y. Otherwise, it $J < \dfrac{C}{2-C}$ when $X \neq Y$
+
+\clearpage
+
+\section{Question 3}
+\textbf{3. Let D1 and D2 be two documents such that D1U D2 = ${1, · · · , n}$. Show that the Jaccard
+similarity of D1 and D2 can be computed exactly in time O(n log n}).\\
+
+Answer:\\
+
+There are two parts for Jaccard similarity, the union of two sets and the intersection of two sets. When we calculate the union of two set, we can simply count all element in two sets, it takes O(n). When we calculate the intersection of two sets, we simply sort two sets, it takes O(nlgn) times and for each element in set $D_{1}$, we simply do binary search in $D_{2}$, since $D_{2}$ is sorted. It takes O(lgn) to find an element in $D_{2}$, and there are n element in $D_{1}$ . Therefor entire program takes O(nlgn) time.
+
+\clearpage
+
+\section{Question 4}
+\textbf{Suppose we picked the following permutations (2x+1)%5, (3x+4)%5, and (x+3)%5. Compute
+the MinHash matrix.}\\
+
+$(2x+1)\%5 = 0->1, 1->3, 2->0, 3->2, 4->4$ so $D1 = 0, D2 = 1, D3 = 2, D4 = 0$\\
+
+$(3x+4)\%5 = 0->4, 1->2, 2->0, 3->3, 4->1$ so $D1 = 0, D2 = 2, D3 = 1, D4 = 0$\\
+ 
+$(x+3)\%5 = 0->3, 1->4, 2->0, 3->1, 4->2$ so $D1 = 0, D2 = 3, D3 = 1, D4 = 0$\\
+
+
+\begin{tabular}{ l | l | l | l }
+
+ \hline
+  0 & 1 & 2 & 0 \\  \hline
+  0 & 2 & 1 & 0 \\  \hline
+  0 & 3 & 1 & 0 \\  \hline
+\end{tabular}
+
+\clearpage
+
+\section{Question 5}
+\textbf{Suppose that we toss a biased coin (probability of head 1/4) n times. Give a lower bound
+the probability that we see at least log n consecutive heads.
+In locality sensitive hashing, we showed that if two documents are s-similar, then the probability
+that they are mapped to the same bucket in some hash table is at least $ 1 - (1 - s^r)^b$.
+Do you see similarity between the two proofs?} \\
+
+Yes. Assume that, we toss the coin n times. For each time, we map it into $[\dfrac{n}{logn}]$ blocks. Because the coin is biased, the probability of consecutive $logn$ tosses is $(\dfrac{1}{4})^{logn}$, and the proablitly of toss in each block of tail is at most $1-(\dfrac{1}{4})^{logn}$.\\
+
+Therefore, in $ lg n$ toss, the probability of each block get all head is $1-(1-(\dfrac{1}{4})^{logn})^{\dfrac{n}{logn}}$, where is similarity with $ 1 - (1 - s^r)^b$ for s = $\dfrac{1}{4}$, r= $logn$, b=$\dfrac{n}{logn}$\\
+
+\clearpage
+\section{Question 6}
+\textbf{Prove Claim 3 from Notes II}\\
+
+Define random variable $X_{i}$ to be the number of $ith$ permutation where   $MH_{a}$ and $MH_{b}$ matches. So we have, $X_{i}$ = 1 if $min[\prod_{i}(D_{a})]$ = $min[\prod_{i}(D_{b})]$, $X_{i}$ = 0. otherwise.\\
+
+Since, for each $X_{i}$, it is independent event. We use chernoff's bound there:\\
+
+$Pr[|\dfrac{x}{k} - Jac(D_{a}, D_{b})| \geq Jac(D_{a}, D_{b}) \cdot \delta] \leq 2 \cdot e^{-\dfrac{\delta^{2} \cdot k \cdot Jac(D_{a}, D_{b})}{2}}$ \\
+
+$\Longrightarrow$ $Pr[|\dfrac{x}{k} - Jac(D_{a}, D_{b})| \leq Jac(D_{a}, D_{b}) \cdot \delta] \geq 1 - 2 \cdot e^{-\dfrac{\delta^{2} \cdot k \cdot Jac(D_{a}, D_{b})}{2}}$\\
+
+The output of algorithm A is $\dfrac{l}{k}$. Let $k = c \cdot \dfrac{1}{\varepsilon^{2} \cdot log\dfrac{1}{\delta}}$  and $\delta = \dfrac{\varepsilon}{Jac(D_{a}, D_{b})}$, then we have:\\
+
+$Pr[|Output of A - Jac(D_{a}, D_{b})| \leq \varepsilon] = 1 - 2e^{- (\dfrac{\varepsilon}{Jac(D_{a}, D_{b})})^{2} \cdot \dfrac{c \cdot \dfrac{1}{\varepsilon} \cdot log\dfrac{1}{\varepsilon} \cdot Jac(D_{a}, D_{b}}{2}}$  = 1-$2  \cdot \delta^{(\dfrac{c}{2 \cdot Jac(D_{a}, D_{b}})}$\\
+
+Because when c increase to large enough, then $2 \cdot \delta^{(\dfrac{c}{2 \cdot Jac(D_{a}, D_{b}})} \leq \delta$\\
+
+We add $(1 - )$ at both side, then we have: $1 - 2 \cdot \delta^{(\dfrac{c}{2 \cdot Jac(D_{a}, D_{b}})} \geq 1- \delta$\\
+
+Therefor $Pr[|Output of A - Jac(D_{a}, D_{b}|) \leq \varepsilon]$ $\geq 1- \delta$
+
+\clearpage
+
+\section{Question 7}
+Because the hash function is one to one mapping, by the Claim 1 in Note, we have $Let S = {1,..., m}, T = {1,...m+1} and Let h be a hash function on S to T$, we want to prove that:\\
+
+$Pr[h(i) = j] = \dfrac{1}{m+1}$\\
+
+Proof:\\
+
+$Pr[h(i) = j] = \dfrac{m}{m+1} \times  \dfrac{m-1}{m}  \times  \dfrac{m-2}{m-1} ....  \times  \dfrac{m-i+1}{m-i+2} \times  \dfrac{1}{m-i+1} = \dfrac{1}{m+1}$\\
+
+Now, by Claim 2, we want to prove that:\\
+
+$Pr[min[h(D_{a})] = min[h(D_{b})]] = Jac(D_{a}, D_{b})$\\
+
+Proof:\\
+
+$Pr[min[h(D_{a})] = min[h(D_{b})]] = \dfrac{D_{a} \cap D_{b}}{m+1} = \dfrac{D_{a} \cap D_{b}}{D_{a} \cup D_{b}} = Jac(D_{a}, D_{b})$
+
+\end{document}

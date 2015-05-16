@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage{times}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{algpseudocode}
+\usepackage{pdfpages} %insert pdf pages
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage[]{algpseudocode}
+
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\  }
+\rhead{\hmwkTitle}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Project Report \#4}
+\newcommand{\hmwkDueDate}{May 1, 2015}
+\newcommand{\hmwkClass}{ComS 535x}
+\newcommand{\hmwkClassInstructor}{Instructor: Professor Aduri, Pavankumar}
+\newcommand{\hmwkAuthorName}{Yuanyuan Tang, Chenguang He}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\\\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ }\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+\renewcommand{\thesection}{\arabic{section}}% Remove section references...
+\renewcommand{\thesubsection}{\arabic{subsection}}%... from subsections
+
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%       default
+   {\csname #1@cntformat\endcsname}}%    enable individual control
+\newcommand\section@cntformat{}
+\makeatother
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Algorithm for building index}
+\begin{algorithm}
+\caption{Index Algorithm}\label{alg:in}
+\begin{algorithmic}[1]
+\Procedure{Build Index}{$File f$}
+\For {$Word w in f$}
+\State $w \gets modify(w)$
+\If{$w is in Inverted$}
+\State $i \gets Inverted.get(w)$
+\If {the last document in i.postringpart is current document}
+\State $i.postringpart.TFtd \gets i.postringpart.TFtd + 1$
+\Else
+\State $i.postringpart.document \gets f$
+\State $i.dictionaryPart.DFt \gets i.dictionaryPart.DFt + 1$
+\EndIf
+\Else
+\State $i = new InvertedIndex$
+\State $i.postingpart \gets (f,i)$
+\EndIf
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Data structures used for the index (for both dictionary and postings part)}
+I build three classes, InvertedIndex, DictionaryPart and PostingsPart.\\
+
+In InvertedIndex, it consist of a array with PostingsPart and one DictionaryPart. In PostingsPart it consist of a integer representation of the document, which the order of index is as same as in the files array, a TFtd. In DictionaryPart, it consist of a string of current term and the DFt.\\
+
+The reason of using arraylist to store postingpart is that, we need to use the order of index to set the index increasing when we build the index. Also, the order is used to build the weight vector.
+
+\clearpage
+
+
+
+\section{Algorithm for building the length of document vectors}
+\begin{algorithm}
+\caption{length of document vector Algorithm}\label{alg:in}
+\begin{algorithmic}[1]
+\Procedure{Build Length}{$WeightedVector weightedvector$}
+\State len[weightedvector] $\gets$ empty array
+\For {w $\in$ weightedvector}
+\State sum $\gets$ 0
+\For {n $\in$ w}
+\State sum += $n^{2}$
+\EndFor
+\State len.add($sqrt(sum)$)
+\For {Index i of n $\in$ w}
+\State  set i th element to n/ sqrt(sum)
+\EndFor
+\EndFor
+\State return len
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\section{Output of two queries}
+Query1: ``astronomers radio instruments adaptive optics''.\\
+Output is:\\
+The top 10 document with its cosine similarity to q is :\\
+the top 1 rank document is space-989.txt-clean , the cosine similarity is 0.2622889780894616\\
+the top 2 rank document is space-987.txt-clean , the cosine similarity is 0.166600487661478\\
+the top 3 rank document is space-985.txt-clean , the cosine similarity is 0.13831364844821636\\
+the top 4 rank document is space-979.txt-clean , the cosine similarity is 0.13342135614608228\\
+the top 5 rank document is space-759.txt-clean , the cosine similarity is 0.11305853420375138\\
+the top 6 rank document is space-744.txt-clean , the cosine similarity is 0.11204706162701411\\
+the top 7 rank document is space-739.txt-clean , the cosine similarity is 0.09987638192931692\\
+the top 8 rank document is space-586.txt-clean , the cosine similarity is 0.09346295409828784\\
+the top 9 rank document is space-492.txt-clean , the cosine similarity is 0.08698815821010417\\
+the top 10 rank document is hockey719.txt , the cosine similarity is 0.08566037212705577\\
+
+Query2:``Mattias Timmander MoDo elite league team''.\\
+Output is:\\
+The top 10 document with its cosine similarity to q is :\\
+the top 1 rank document is hockey123.txt , the cosine similarity is 0.2933688991706478\\
+the top 2 rank document is hockey125.txt , the cosine similarity is 0.1548387900355622\\
+the top 3 rank document is hockey884.txt , the cosine similarity is 0.10925888803206889\\
+the top 4 rank document is baseball811.txt , the cosine similarity is 0.05071168274469853\\
+the top 5 rank document is hockey957.txt , the cosine similarity is 0.07410033028289059\\
+the top 6 rank document is hockey995.txt , the cosine similarity is 0.06454051757187494\\
+the top 7 rank document is baseball734.txt , the cosine similarity is 0.06364779113409008\\
+the top 8 rank document is hockey106.txt , the cosine similarity is 0.06022956762946571\\
+the top 9 rank document is hockey520.txt , the cosine similarity is 0.05878079784709665\\
+the top 10 rank document is hockey159.txt , the cosine similarity is 0.05490325657686845\\
+\end{document} 
